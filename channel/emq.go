@@ -12,12 +12,12 @@ type Broker struct {
 
 func (b *Broker) Close() {
 	b.mutex.Lock()
-	chans := b.chans
+	echans := b.chans
 	b.chans = nil
 	b.mutex.Unlock()
 
-	for _, chs := range chans {
-		for ch := range chs {
+	for _, chs := range echans {
+		for _, ch := range chs {
 			close(ch)
 		}
 	}
