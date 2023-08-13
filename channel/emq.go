@@ -10,6 +10,19 @@ type Broker struct {
 	chans map[string][]chan Msg
 }
 
+func (b *Broker) Close() {
+	b.mutex.Lock()
+	chans := b.chans
+	b.chans = nil
+	b.mutex.Unlock()
+
+	for _, chs := range chans {
+		for ch := range chs {
+			close(ch)
+		}
+	}
+}
+
 func NewBroker() *Broker {
 	return &Broker{
 		chans: make(map[string][]chan Msg),
